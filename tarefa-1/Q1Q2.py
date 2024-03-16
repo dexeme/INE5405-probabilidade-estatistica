@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from utils import utils
 
 # Data for Gasolina Aditivada
 data_aditivada = {
@@ -35,17 +36,17 @@ df_aditivada = pd.DataFrame(data_aditivada)
 df_comum = pd.DataFrame(data_comum)
 
 # Calculating the required statistics
-mean_aditivada = df_aditivada['PRECO_MEDIO_REVENDA'].mean()
-median_aditivada = df_aditivada['PRECO_MEDIO_REVENDA'].median()
-variance_aditivada = df_aditivada['PRECO_MEDIO_REVENDA'].var(ddof=0)
-std_dev_aditivada = df_aditivada['PRECO_MEDIO_REVENDA'].std(ddof=0)
-coef_var_aditivada = df_aditivada['COEF_DE_VARIACAO_REVENDA'].mean()
+mean_aditivada = utils.media(df_aditivada['PRECO_MEDIO_REVENDA'])
+median_aditivada = utils.mediana(df_aditivada['PRECO_MEDIO_REVENDA'])
+variance_aditivada = utils.variancia(df_aditivada['PRECO_MEDIO_REVENDA'])
+std_dev_aditivada = utils.desvio_padrao(df_aditivada['PRECO_MEDIO_REVENDA'])
+coef_var_aditivada = utils.coeficiente_variacao(df_aditivada['PRECO_MEDIO_REVENDA'])
 
-mean_comum = df_comum['PRECO_MEDIO_REVENDA'].mean()
-median_comum = df_comum['PRECO_MEDIO_REVENDA'].median()
-variance_comum = df_comum['PRECO_MEDIO_REVENDA'].var(ddof=0)
-std_dev_comum = df_comum['PRECO_MEDIO_REVENDA'].std(ddof=0)
-coef_var_comum = df_comum['COEF_DE_VARIACAO_REVENDA'].mean()
+mean_comum = utils.media(df_comum['PRECO_MEDIO_REVENDA'])
+median_comum = utils.mediana(df_comum['PRECO_MEDIO_REVENDA'])
+variance_comum = utils.variancia(df_comum['PRECO_MEDIO_REVENDA'])
+std_dev_comum = utils.desvio_padrao(df_comum['PRECO_MEDIO_REVENDA'])
+coef_var_comum = utils.coeficiente_variacao(df_comum['PRECO_MEDIO_REVENDA'])
 
 # Prepare the results for display
 results = {
@@ -82,5 +83,5 @@ plt.tight_layout()
 plot_filename = './result/comparative_dot_plot.png'
 plt.savefig(plot_filename)
 plt.close()
-
+print(results)
 plot_filename, results
