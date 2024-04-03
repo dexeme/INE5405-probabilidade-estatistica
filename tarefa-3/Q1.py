@@ -8,7 +8,9 @@ from utils import utils
 #         a escolha para a  situação definida a analisar.
 
 coluna_de_precos = 'I04- PET 500 ML'
-caminho_planilha = "/home/exe/Pessoal/UFSC-2024-1/probabilidade-estatistica/tarefa-3/Planilha (2).xlsx"
+caminho_planilha = "C:/Users/dexem/Documents/UFSC/2024.1/probabilidade-estatistica/tarefa-3/dados_seg_1.xlsx"
 
-utils.gera_histograma(caminho_planilha, 'blue', coluna_de_precos)
-utils.gera_histograma(caminho_planilha, 'red', coluna_de_precos)
+dados = utils.extrai_dados_da_planilha(caminho_planilha, coluna_de_precos)
+n = len(dados)
+k = round(np.sqrt(n))
+utils.gera_histograma(dados, 'blue', k)
