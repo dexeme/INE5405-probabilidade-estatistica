@@ -1,10 +1,57 @@
+from dataclasses import dataclass
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import variation
 
-def extrai_dados_da_planilha(caminho_planilha, coluna):
-    dados = pd.read_excel(caminho_planilha)
-    return dados[coluna]
+def prompt_items(msg: str, itens: list[str]) -> int:
+    itens_str = "\n".join(f"{i} - {v}" for i, v in enumerate(itens))
+    print(msg + "\n" + itens_str)
+
+    while True:
+        index = input("Insira o índice: ")
+
+        if index.isnumeric():
+            return int(index)
+
+
+def filtrar_por_valor_de_coluna(msg: str, valores: np.ndarray, coluna_i: int):
+    # pega valores das linhas na coluna alvo discartando repetições
+    valores_coluna = np.unique(valores[:, coluna_i])
+
+    # pede pro usuario escolher um dos valores
+    i = prompt_items(msg, valores_coluna)
+    valor = valores_coluna[i]
+
+    # mantem apenas as linhas que possuem este valor na coluna alvo
+    return valores[valores[:, coluna_i] == valor]
+
+def extrai_dados_da_planilha(caminho_planilha, output_file: str | None = None) -> np.ndarray:
+    # Carregar a planilha
+    tabela = pd.read_excel(caminho_planilha)
+
+    valores = tabela.values
+
+    valores_produto = filtrar_por_valor_de_coluna("Produtos: ", valores, 0)
+    valores_marca = filtrar_por_valor_de_coluna("Marcas: ", valores_produto, 7)
+
+    embalagem_i = prompt_items("Embalagens: ", tabela.columns[8:]) + 8
+    valores_filtrados = valores_marca[~pd.isnull(valores_marca[:, embalagem_i])]
+
+    seg = None
+    while seg not in ("1", "2"):
+        seg = input("Segmento (1, 2): ")
+
+    segmento = valores_filtrados[valores_filtrados[:, 3] == int(seg)]
+
+    if output_file is not None:
+        tabela_filtrada = pd.DataFrame({
+            label: segmento[:, i] for i, label in enumerate(tabela.columns)
+        })
+        tabela_filtrada.to_excel(output_file)
+
+    dados = segmento[:, embalagem_i]
+    return dados
 
 def calcula_resultados(frequencias, n, min_preco, max_preco, k):
     bins = np.linspace(min_preco, max_preco, k + 1)
