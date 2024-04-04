@@ -16,9 +16,11 @@ def menu_principal():
         escolha = input("Digite a opção desejada: ")
         
         if escolha == '1':
-            print("Filtragem (ainda não implementada)")
-        elif escolha == '2':
             caminho_planilha = escolher_planilha("planilhas")
+            if caminho_planilha:
+                extrai_dados_da_planilha_completa(caminho_planilha)
+        elif escolha == '2':
+            caminho_planilha = escolher_planilha("planilhas_extraidas")
             if caminho_planilha:
                 menu_operacoes_na_planilha(caminho_planilha)
         elif escolha == '3':
@@ -106,6 +108,58 @@ def menu_operacoes_na_planilha(caminho_planilha):
             break
         else:
             print("Opção inválida. Tente novamente.")
+
+
+def prompt_items(msg: str, itens: list[str]) -> int:
+    itens_str = "\n".join(f"{i} - {v}" for i, v in enumerate(itens))
+    print(msg + "\n" + itens_str)
+
+    while True:
+        index = input("Insira o índice: ")
+
+        if index.isnumeric():
+            return int(index)
+
+
+def filtrar_por_valor_de_coluna(msg: str, valores: np.ndarray, coluna_i: int):
+    # pega valores das linhas na coluna alvo discartando repetições
+    valores_coluna = np.unique(valores[:, coluna_i])
+
+    # pede pro usuario escolher um dos valores
+    i = prompt_items(msg, valores_coluna)
+    valor = valores_coluna[i]
+
+    # mantem apenas as linhas que possuem este valor na coluna alvo
+    return valores[valores[:, coluna_i] == valor]
+
+def extrai_dados_da_planilha_completa(caminho_planilha:str) -> np.ndarray:
+    # Carregar a planilha
+    tabela = pd.read_excel(caminho_planilha)
+
+    valores = tabela.values
+
+    valores_produto = filtrar_por_valor_de_coluna("Produtos: ", valores, 0)
+    valores_marca = filtrar_por_valor_de_coluna("Marcas: ", valores_produto, 7)
+
+    embalagem_i = prompt_items("Embalagens: ", tabela.columns[8:]) + 8
+    valores_filtrados = valores_marca[~pd.isnull(valores_marca[:, embalagem_i])]
+
+    seg = None
+    while seg not in ("1", "2"):
+        seg = input("Segmento (1, 2): ")
+
+    segmento = valores_filtrados[valores_filtrados[:, 3] == int(seg)]
+
+    output_file = input("Nome do arquivo de saída (enter para deixar padrão): ")
+    tabela_filtrada = pd.DataFrame({
+        label: segmento[:, i] for i, label in enumerate(tabela.columns)
+    })
+    if output_file != "":
+        tabela_filtrada.to_excel(f"planilhas_extraidas/" + output_file + ".xlsx")
+    else: tabela_filtrada.to_excel("planilhas_extraidas/tabela_filtrada.xlsx")
+
+    dados = segmento[:, embalagem_i]
+    return dados
 
 if __name__ == "__main__":
     menu_principal()
