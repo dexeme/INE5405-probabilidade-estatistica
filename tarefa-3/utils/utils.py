@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Iterable
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -81,7 +82,11 @@ def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
     return estatisticas
 
 def gera_histograma(dados, k, cor, titulo):
+    intervalos = calcula_intervalos_de_classe(dados, k)
+    ticks = [*(menor for (menor, _) in intervalos), intervalos[-1][1]]
+
     plt.hist(dados, bins=k, color=cor, edgecolor='black', alpha=0.7)
+    plt.xticks(ticks)
     plt.title(titulo)
     plt.xlabel("Valor")
     plt.ylabel("Frequência")
@@ -94,6 +99,16 @@ def calcula_erro_relativo(dados_originais, dados_agrupados):
 
 def k_metodo_raiz_de_n(dados):
     return round(np.sqrt(len(dados)))
+
+def calcula_intervalos_de_classe(dados: Iterable[float], k: int) -> list[tuple[float, float]]:
+    menor = min(dados)
+    maior = max(dados)
+    extensao = (maior - menor) / k
+
+    return [
+        (menor + i*extensao, menor + (i + 1)*extensao)
+        for i in range(k)
+    ]
 
 def operacao_principal(caminho_planilha, coluna):
     dados = extrai_dados_da_planilha(caminho_planilha, coluna)
