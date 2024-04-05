@@ -3,7 +3,7 @@ from typing import Iterable
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import variation
+from scipy import stats as st
 
 def extrai_dados_da_planilha(caminho_planilha, coluna):
     dados = pd.read_excel(caminho_planilha)
@@ -58,7 +58,10 @@ def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
         desvio_padrao = np.sqrt(variancia_)
         erro_padrao_media = desvio_padrao / np.sqrt(n)
         coef_variacao = (desvio_padrao / np.sum(dados['xi_fr']) ) / 100
-    else:
+
+        mode_result = st.mode(dados["xi"])
+        moda = mode_result.mode if mode_result.count > 1 else "-"
+    else:   
         
         print("dados", dados)
         media = np.mean(dados)
@@ -67,16 +70,21 @@ def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
         desvio_padrao = np.sqrt(variancia_)
         erro_padrao_media = desvio_padrao / np.sqrt(n)
         coef_variacao = desvio_padrao / media
+
+        mode_result = st.mode(dados)
+        moda = mode_result.mode if mode_result.count > 1 else "-"
+
     assimetria = (media - mediana) / desvio_padrao if desvio_padrao != 0 else 0
 
     estatisticas = {
-        'media': media,
-        'mediana': mediana,
-        'variancia': variancia_,
-        'desvio_padrao': desvio_padrao,
-        'erro_padrao_media': erro_padrao_media,
-        'coeficiente_variacao': coef_variacao * 100,  # Para torná-lo percentual
-        'assimetria': assimetria
+        "Moda": moda,
+        'Média': media,
+        'Mediana': mediana,
+        'Variância': variancia_,
+        'Desvio Padrão': desvio_padrao,
+        'Erro Padrão Média': erro_padrao_media,
+        'Coeficiente Variação': coef_variacao * 100,  # Para torná-lo percentual
+        'Assimetria': assimetria
     }
     
     return estatisticas
@@ -94,7 +102,19 @@ def gera_histograma(dados, k, cor, titulo):
     plt.show()
 
 def calcula_erro_relativo(dados_originais, dados_agrupados):
-    erro_relativo = {chave: ((dados_originais[chave] - dados_agrupados[chave]) / dados_originais[chave]) * 100 for chave in dados_originais}
+    erro_relativo = {}
+    
+    for chave in dados_originais:
+        original = dados_originais[chave]
+        agrupado = dados_agrupados[chave]
+
+        if isinstance(original, float) and isinstance(agrupado, float):
+            valor = ((original - agrupado) / original) * 100
+        else:
+            valor = "-"
+        
+        erro_relativo[chave] = valor
+
     return erro_relativo
 
 def k_metodo_raiz_de_n(dados):

@@ -20,6 +20,14 @@ def Q4(caminho_planilha, coluna):
     dados_agrupados = utils.calcula_estatisticas_descritivas(resultados, True, n)
     erro_relativo = utils.calcula_erro_relativo(dados_originais, dados_agrupados)
 
-    utils.imprime_estatisticas(dados_originais, "Estatísticas Descritivas dos Dados Originais")
-    utils.imprime_estatisticas(dados_agrupados, "Estatísticas Descritivas dos Dados Agrupados")
-    utils.imprime_erro_relativo(erro_relativo)
+    tabela = pd.DataFrame({
+        "-": dados_originais.keys(),
+        "Agrupados": dados_agrupados.values(),
+        "Não Agrupados": dados_originais.values(),
+        "Erro Relativo": erro_relativo.values(),
+    })
+    print(tabela)
+
+    caminho = input("Caminho da tabela acima (Branco para ignorar): ")
+    if caminho:
+        tabela.to_excel(caminho if "." in caminho else f"{caminho}.xlsx", index=False)
