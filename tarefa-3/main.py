@@ -53,6 +53,10 @@ def escolher_coluna(caminho_planilha):
     
     return coluna_escolhida
 
+def escolher_titulo():
+    titulo = input("Título do histograma: ")
+    return titulo if titulo.strip() else "Histograma por Classe"
+
 def escolher_cor():
     print("\nCores disponíveis:")
     print("1. Azul")
@@ -91,7 +95,8 @@ def menu_operacoes_na_planilha(caminho_planilha):
         if escolha == '1':
             # Substitua 'funcao_Q1' pelo nome real da sua função
             cor_histograma = escolher_cor()
-            Q1(caminho_planilha, coluna_a_analisar, cor_histograma)
+            titulo_histograma = escolher_titulo()
+            Q1(caminho_planilha, coluna_a_analisar, cor_histograma, titulo_histograma)
         elif escolha == '2':
             # Substitua 'funcao_Q2' pelo nome real da sua função
             Q3(caminho_planilha, coluna_a_analisar)

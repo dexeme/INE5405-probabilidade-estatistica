@@ -80,9 +80,9 @@ def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
     
     return estatisticas
 
-def gera_histograma(dados, k, cor):
+def gera_histograma(dados, k, cor, titulo):
     plt.hist(dados, bins=k, color=cor, edgecolor='black', alpha=0.7)
-    plt.title("Histograma por Classe")
+    plt.title(titulo)
     plt.xlabel("Valor")
     plt.ylabel("Frequência")
     plt.grid(axis='y', alpha=0.75)
