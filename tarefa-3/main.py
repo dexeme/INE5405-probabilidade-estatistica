@@ -5,6 +5,7 @@ from utils import utils
 from Q1 import Q1
 from Q3 import Q3
 from Q4 import Q4
+from Q5 import Q5
 
 def menu_principal():
     while True:
@@ -53,9 +54,9 @@ def escolher_coluna(caminho_planilha):
     
     return coluna_escolhida
 
-def escolher_titulo():
-    titulo = input("Título do histograma: ")
-    return titulo if titulo.strip() else "Histograma por Classe"
+def escolher_titulo(default="Title"):
+    titulo = input("Título do plot: ")
+    return titulo if titulo.strip() else default
 
 def escolher_cor():
     print("\nCores disponíveis:")
@@ -87,15 +88,16 @@ def menu_operacoes_na_planilha(caminho_planilha):
         print("1. Executar Q1")
         print("2. Executar Q3")
         print("3. Executar Q4")
-        print("4. Executar todas as operações")
-        print("5. Voltar ao menu principal")
+        print("4. Executar Q5")
+        print("5. Executar todas as operações")
+        print("6. Voltar ao menu principal")
         
         escolha = input("Selecione a operação desejada: ")
         
         if escolha == '1':
             # Substitua 'funcao_Q1' pelo nome real da sua função
             cor_histograma = escolher_cor()
-            titulo_histograma = escolher_titulo()
+            titulo_histograma = escolher_titulo("Histograma por Classe")
             Q1(caminho_planilha, coluna_a_analisar, cor_histograma, titulo_histograma)
         elif escolha == '2':
             # Substitua 'funcao_Q2' pelo nome real da sua função
@@ -104,12 +106,16 @@ def menu_operacoes_na_planilha(caminho_planilha):
             # Substitua 'funcao_Q3' pelo nome real da sua função
             Q4(caminho_planilha, coluna_a_analisar)
         elif escolha == '4':
+            cor_plot = escolher_cor()
+            titulo_plot = escolher_titulo("Boxplot")
+            Q5(caminho_planilha, coluna_a_analisar, titulo_plot, cor_plot)
+        elif escolha == '5':
             # Substitua pelos nomes reais das suas funções
             cor_histograma = escolher_cor()
             Q1(caminho_planilha, coluna_a_analisar, cor_histograma)
             Q3(caminho_planilha, coluna_a_analisar)
             Q4(caminho_planilha, coluna_a_analisar)
-        elif escolha == '5':
+        elif escolha == '6':
             break
         else:
             print("Opção inválida. Tente novamente.")
