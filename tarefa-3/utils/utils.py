@@ -101,9 +101,20 @@ def gera_histograma(dados, k, cor, titulo):
     plt.grid(axis='y', alpha=0.75)
     plt.show()
 
+
+def gera_boxplot(dados, titulo, cor):
+    plot = plt.boxplot(dados, notch=True, patch_artist=True)
+
+    for patch in plot["boxes"]:
+        patch.set_facecolor(cor)
+
+    plt.title(titulo)
+    plt.ylabel("Preços")
+    plt.show()
+
 def calcula_erro_relativo(dados_originais, dados_agrupados):
     erro_relativo = {}
-    
+
     for chave in dados_originais:
         original = dados_originais[chave]
         agrupado = dados_agrupados[chave]
