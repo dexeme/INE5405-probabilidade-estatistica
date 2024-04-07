@@ -12,9 +12,7 @@ def Q4(caminho_planilha, coluna):
     n = len(dados)
     k = utils.k_metodo_raiz_de_n(dados)
 
-    intervalos = pd.cut(dados, bins=k)
-    frequencias = intervalos.value_counts().sort_index()
-    resultados = utils.calcula_resultados(frequencias, len(dados), min(dados), max(dados), k)
+    resultados = utils.calcula_resultados(dados, k)
 
     dados_originais = utils.calcula_estatisticas_descritivas(dados, False, n)
     dados_agrupados = utils.calcula_estatisticas_descritivas(resultados, True, n)

@@ -9,14 +9,15 @@ def extrai_dados_da_planilha(caminho_planilha, coluna):
     dados = pd.read_excel(caminho_planilha)
     return dados[coluna]
 
-def calcula_resultados(frequencias, n, min_preco, max_preco, k):
-    bins = np.linspace(min_preco, max_preco, k + 1)
-    xi = (bins[:-1] + bins[1:]) / 2
-    Fr = frequencias / n
+def calcula_resultados(dados, k):
+    frequencias, xi = calcula_frequencias_e_xi(dados, k)
+
+    Fr = frequencias / len(dados)
     xi_fr = xi * Fr
     qdp = ((xi - np.sum(xi_fr))**2) * Fr
 
     resultados = {
+        'freq': frequencias,
         'xi': xi,
         'qdp': qdp,
         'xi_fr': xi_fr
@@ -26,7 +27,7 @@ def calcula_resultados(frequencias, n, min_preco, max_preco, k):
 def calcula_frequencias_e_xi(dados, k):
     intervalos = pd.cut(dados, bins=k, labels=False)
     frequencias = np.bincount(intervalos)
-    bins = np.linspace(dados.min(), dados.max(), k + 1)
+    bins = np.linspace(min(dados), max(dados), k + 1)
     xi = (bins[:-1] + bins[1:]) / 2
     return frequencias, xi
 
@@ -52,7 +53,7 @@ def imprime_erro_relativo(erro_relativo):
 # Atualize a função calcula_estatisticas_descritivas para retornar os dados corretamente
 def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
     if is_agrupado:
-        media = np.mean(dados['xi'])
+        media = np.mean(sum(dados['freq'] * dados['xi']) / sum(dados['freq']))
         mediana = np.median(dados['xi'])
         variancia_ = np.sum(dados['qdp'])
         desvio_padrao = np.sqrt(variancia_)
@@ -120,7 +121,7 @@ def calcula_erro_relativo(dados_originais, dados_agrupados):
         agrupado = dados_agrupados[chave]
 
         if isinstance(original, float) and isinstance(agrupado, float):
-            valor = ((original - agrupado) / original) * 100
+            valor = ((agrupado - original) / original) * 100
         else:
             valor = "-"
         
