@@ -112,7 +112,8 @@ def menu_operacoes_na_planilha(caminho_planilha):
         elif escolha == '5':
             # Substitua pelos nomes reais das suas funções
             cor_histograma = escolher_cor()
-            Q1(caminho_planilha, coluna_a_analisar, cor_histograma)
+            titulo_histograma = escolher_titulo("Histograma por Classe")
+            Q1(caminho_planilha, coluna_a_analisar, cor_histograma, titulo_histograma)
             Q3(caminho_planilha, coluna_a_analisar)
             Q4(caminho_planilha, coluna_a_analisar)
         elif escolha == '6':
