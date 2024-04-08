@@ -29,7 +29,7 @@ def calcula_resultados(dados, k):
         'xi': xi,
         'amplitude': amplitude,
         'qdp': qdp,
-        'xi_fr': xi_fr
+        'xi_fr': xi_fr,
     }
     return dados
 
@@ -57,19 +57,19 @@ def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
     if is_agrupado:
         media = np.mean(sum(dados['freq'] * dados['xi']) / sum(dados['freq']))
         mediana = dados['lim_inf_classe'][dados['intervalo_da_mediana']-1] + ((n/2 - dados['freq_acum'][dados['intervalo_da_mediana']-2]) / dados['freq'][dados['intervalo_da_mediana']-1]) * dados['amplitude']
-        variancia_ = np.sum(dados['qdp'])
+        variancia_ = ((dados['xi']-media)**2).dot(dados['freq']) / (dados['freq'].sum()-1)
         desvio_padrao = np.sqrt(variancia_)
         erro_padrao_media = desvio_padrao / np.sqrt(n)
-        coef_variacao = (desvio_padrao / np.sum(dados['xi_fr']) ) / 100
+        coef_variacao = desvio_padrao / media
 
         mode_result = st.mode(dados["xi"])
         moda = mode_result.mode if mode_result.count > 1 else "-"
-    else:   
+    else:
         
         print("dados", dados)
-        media = np.mean(dados)
-        mediana = np.median(dados)
-        variancia_ = np.var(np.array(dados))
+        media = dados.mean()
+        mediana = dados.median()
+        variancia_ = dados.var()
         desvio_padrao = np.sqrt(variancia_)
         erro_padrao_media = desvio_padrao / np.sqrt(n)
         coef_variacao = desvio_padrao / media
@@ -86,7 +86,7 @@ def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
         'Variância': variancia_,
         'Desvio Padrão': desvio_padrao,
         'Erro Padrão Média': erro_padrao_media,
-        'Coeficiente Variação': coef_variacao * 100,  # Para torná-lo percentual
+        'Coeficiente Variação': coef_variacao,
         'Assimetria': assimetria
     }
     
@@ -123,7 +123,7 @@ def calcula_erro_relativo(dados_originais, dados_agrupados):
         agrupado = dados_agrupados[chave]
 
         if isinstance(original, float) and isinstance(agrupado, float):
-            valor = ((agrupado - original) / original) * 100
+            valor = ((original - agrupado) / agrupado) * 100
         else:
             valor = "-"
         
