@@ -14,9 +14,7 @@ def Q3(caminho_planilha, coluna):
     dados = utils.extrai_dados_da_planilha(caminho_planilha, coluna)
     k = utils.k_metodo_raiz_de_n(dados)
     n = len(dados)
-    intervalos = pd.cut(dados, bins=k)
-    frequencias = intervalos.value_counts().sort_index()
-    resultados = utils.calcula_resultados(frequencias, len(dados), min(dados), max(dados), k)
+    resultados = utils.calcula_resultados(dados, k)
     dados_agrupados = utils.calcula_estatisticas_descritivas(resultados, True, n)
     return dados_agrupados
 
