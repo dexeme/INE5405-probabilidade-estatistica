@@ -10,26 +10,28 @@ def extrai_dados_da_planilha(caminho_planilha, coluna):
     return dados[coluna]
 
 def calcula_resultados(dados, k):
-    frequencias, xi = calcula_frequencias_e_xi(dados, k)
-
-    Fr = frequencias / len(dados)
+    intervalos = pd.cut(dados, bins=k, labels=False)
+    freq = np.bincount(intervalos)
+    freq_acum = np.cumsum(freq)	
+    bins = np.linspace(min(dados), max(dados), k + 1)
+    xi = (bins[:-1] + bins[1:]) / 2
+    amplitude = bins[1] - bins[0]
+    Fr = freq / len(dados)
     xi_fr = xi * Fr
     qdp = ((xi - np.sum(xi_fr))**2) * Fr
-
-    resultados = {
-        'freq': frequencias,
+    intervalo_da_mediana = np.where(freq_acum >= len(dados) / 2)[0][0]
+    dados = {
+        'intervalo_da_mediana': intervalo_da_mediana,
+        'lim_inf_classe': bins[:-1],
+        'lim_sup_classe': bins[1:],
+        'freq': freq,
+        'freq_acum': freq_acum,
         'xi': xi,
+        'amplitude': amplitude,
         'qdp': qdp,
         'xi_fr': xi_fr
     }
-    return resultados
-
-def calcula_frequencias_e_xi(dados, k):
-    intervalos = pd.cut(dados, bins=k, labels=False)
-    frequencias = np.bincount(intervalos)
-    bins = np.linspace(min(dados), max(dados), k + 1)
-    xi = (bins[:-1] + bins[1:]) / 2
-    return frequencias, xi
+    return dados
 
 def variancia(numeros: list[float]):
     md = np.mean(numeros)
@@ -54,7 +56,7 @@ def imprime_erro_relativo(erro_relativo):
 def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
     if is_agrupado:
         media = np.mean(sum(dados['freq'] * dados['xi']) / sum(dados['freq']))
-        mediana = np.median(dados['xi'])
+        mediana = dados['lim_inf_classe'][dados['intervalo_da_mediana']-1] + ((n/2 - dados['freq_acum'][dados['intervalo_da_mediana']-2]) / dados['freq'][dados['intervalo_da_mediana']-1]) * dados['amplitude']
         variancia_ = np.sum(dados['qdp'])
         desvio_padrao = np.sqrt(variancia_)
         erro_padrao_media = desvio_padrao / np.sqrt(n)
@@ -149,8 +151,8 @@ def operacao_principal(caminho_planilha, coluna):
     estatisticas_originais = calcula_estatisticas_descritivas(dados)
     print("Estatísticas Descritivas dos Dados Originais:", estatisticas_originais)
 
-    frequencias, xi = calcula_frequencias_e_xi(dados, k)
-    estatisticas_agrupadas = calcula_estatisticas_descritivas(xi)
+    dados = calcula_resultados(dados, k)
+    estatisticas_agrupadas = calcula_estatisticas_descritivas(dados['xi'])
     print("\nEstatísticas Descritivas dos Dados Agrupados:", estatisticas_agrupadas)
 
     erro_relativo = calcula_erro_relativo(estatisticas_originais, estatisticas_agrupadas)
