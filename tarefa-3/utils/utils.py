@@ -123,7 +123,7 @@ def calcula_erro_relativo(dados_originais, dados_agrupados):
         agrupado = dados_agrupados[chave]
 
         if isinstance(original, float) and isinstance(agrupado, float):
-            valor = ((original - agrupado) / agrupado) * 100
+            valor = (abs(original - agrupado) / original) * 100
         else:
             valor = "-"
         
