@@ -131,8 +131,12 @@ def calcula_erro_relativo(dados_originais, dados_agrupados):
 
     return erro_relativo
 
+def k_metodo_sturges(dados):
+    print()
+    return round(int(1 + 3.322 * np.log10(len(dados))))
+
 def k_metodo_raiz_de_n(dados):
-    return round(np.sqrt(len(dados)))
+    return round(int(np.sqrt(len(dados))))
 
 def calcula_intervalos_de_classe(dados: Iterable[float], k: int) -> list[tuple[float, float]]:
     menor = min(dados)
@@ -146,7 +150,7 @@ def calcula_intervalos_de_classe(dados: Iterable[float], k: int) -> list[tuple[f
 
 def operacao_principal(caminho_planilha, coluna):
     dados = extrai_dados_da_planilha(caminho_planilha, coluna)
-    k = k_metodo_raiz_de_n(dados)
+    k = k_metodo_sturges(dados)
     gera_histograma(dados, k)
     estatisticas_originais = calcula_estatisticas_descritivas(dados)
     print("Estatísticas Descritivas dos Dados Originais:", estatisticas_originais)

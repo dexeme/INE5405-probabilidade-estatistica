@@ -10,7 +10,7 @@ def Q4(caminho_planilha, coluna):
     dados = utils.extrai_dados_da_planilha(caminho_planilha, coluna)
 
     n = len(dados)
-    k = utils.k_metodo_raiz_de_n(dados)
+    k = utils.k_metodo_sturges(dados)
 
     resultados = utils.calcula_resultados(dados, k)
 

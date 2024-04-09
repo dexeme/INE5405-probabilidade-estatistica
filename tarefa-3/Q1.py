@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from utils.utils import calcula_intervalos_de_classe, extrai_dados_da_planilha, k_metodo_raiz_de_n, gera_histograma
+from utils.utils import calcula_intervalos_de_classe, extrai_dados_da_planilha, k_metodo_sturges, gera_histograma, k_metodo_raiz_de_n
 
 #   1-    Construa os modelos empíricos (distribuições/tabelas de frequências) 
 #         utilizando um critério técnico adequado (raiz de “n” ou Sturges) justificando
@@ -19,7 +19,7 @@ def Q1(caminho_planilha, coluna_a_analisar, cor_do_histograma, titulo_do_histogr
     extensao = maior - menor
     print(f"Extensão: {extensao}")
 
-    k = k_metodo_raiz_de_n(dados)
+    k = k_metodo_sturges(dados)
     intervalo_classes = calcula_intervalos_de_classe(dados, k)
     frequencia = [len([v for v in dados if inf <= v <= sup]) for inf, sup in intervalo_classes]
     Fr = [freq / N for freq in frequencia]
