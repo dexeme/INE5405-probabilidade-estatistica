@@ -65,8 +65,6 @@ def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
         mode_result = st.mode(dados["xi"])
         moda = mode_result.mode if mode_result.count > 1 else "-"
     else:
-        
-        print("dados", dados)
         media = dados.mean()
         mediana = dados.median()
         variancia_ = dados.var()
@@ -80,6 +78,7 @@ def calcula_estatisticas_descritivas(dados, is_agrupado=False, n=None):
     assimetria = (media - mediana) / desvio_padrao if desvio_padrao != 0 else 0
 
     estatisticas = {
+        "Classe da Mediana": f"Mediana está na classe {np.where(dados['freq_acum'] >= n / 2)[0][0]}" if is_agrupado else "-",
         "Moda": moda,
         'Média': media,
         'Mediana': mediana,
@@ -133,7 +132,7 @@ def calcula_erro_relativo(dados_originais, dados_agrupados):
 
 def k_metodo_sturges(dados):
     print()
-    return round(int(1 + 3.322 * np.log10(len(dados))))
+    return round((1 + 3.322 * np.log10(len(dados))))
 
 def k_metodo_raiz_de_n(dados):
     return round(int(np.sqrt(len(dados))))

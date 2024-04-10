@@ -95,54 +95,37 @@ def menu_operacoes_na_planilha(caminho_planilha):
         escolha = input("Selecione a operação desejada: ")
         
         if escolha == '1':
-            # Substitua 'funcao_Q1' pelo nome real da sua função
             cor_histograma = escolher_cor()
             titulo_histograma = escolher_titulo("Histograma por Classe")
             Q1(caminho_planilha, coluna_a_analisar, cor_histograma, titulo_histograma)
         elif escolha == '2':
-            # Substitua 'funcao_Q2' pelo nome real da sua função
             Q3(caminho_planilha, coluna_a_analisar)
         elif escolha == '3':
-            # Substitua 'funcao_Q3' pelo nome real da sua função
             Q4(caminho_planilha, coluna_a_analisar)
         elif escolha == '4':
             cor_plot = escolher_cor()
             titulo_plot = escolher_titulo("Boxplot")
             Q5(caminho_planilha, coluna_a_analisar, titulo_plot, cor_plot)
         elif escolha == '5':
-            # Substitua pelos nomes reais das suas funções
             cor_histograma = escolher_cor()
             titulo_histograma = escolher_titulo("Histograma por Classe")
             Q1(caminho_planilha, coluna_a_analisar, cor_histograma, titulo_histograma)
             Q3(caminho_planilha, coluna_a_analisar)
             Q4(caminho_planilha, coluna_a_analisar)
+            cor_plot = escolher_cor()
+            titulo_plot = escolher_titulo("Boxplot")
+            Q5(caminho_planilha, coluna_a_analisar, titulo_plot, cor_plot)
         elif escolha == '6':
             break
         else:
             print("Opção inválida. Tente novamente.")
 
+def filtrar_por_valor_de_coluna(criterio: str, valores: np.ndarray, indice_coluna: int) -> np.ndarray:
+    return valores[valores[:, indice_coluna] == criterio]
 
-def prompt_items(msg: str, itens: list[str]) -> int:
-    itens_str = "\n".join(f"{i} - {v}" for i, v in enumerate(itens))
-    print(msg + "\n" + itens_str)
-
-    while True:
-        index = input("Insira o índice: ")
-
-        if index.isnumeric():
-            return int(index)
-
-
-def filtrar_por_valor_de_coluna(msg: str, valores: np.ndarray, coluna_i: int):
-    # pega valores das linhas na coluna alvo discartando repetições
-    valores_coluna = np.unique(valores[:, coluna_i])
-
-    # pede pro usuario escolher um dos valores
-    i = prompt_items(msg, valores_coluna)
-    valor = valores_coluna[i]
-
-    # mantem apenas as linhas que possuem este valor na coluna alvo
-    return valores[valores[:, coluna_i] == valor]
+def prompt_items(prompt: str, items: list) -> int:
+    print(prompt + " " + ", ".join(items))
+    return int(input("Escolha o índice da coluna desejada: "))
 
 def extrai_dados_da_planilha_completa(caminho_planilha:str) -> np.ndarray:
     # Carregar a planilha
@@ -166,9 +149,14 @@ def extrai_dados_da_planilha_completa(caminho_planilha:str) -> np.ndarray:
     tabela_filtrada = pd.DataFrame({
         label: segmento[:, i] for i, label in enumerate(tabela.columns)
     })
+    
     if output_file != "":
-        tabela_filtrada.to_excel(f"planilhas_extraidas/" + output_file + ".xlsx")
-    else: tabela_filtrada.to_excel("planilhas_extraidas/tabela_filtrada.xlsx")
+        caminho_completo = f"planilhas_extraidas/" + output_file + ".xlsx"
+    else:
+        caminho_completo = "planilhas_extraidas/tabela_filtrada.xlsx"
+
+    # Salvando o DataFrame com o formato especificado para números flutuantes
+    tabela_filtrada.to_excel(caminho_completo, float_format="%.4f", index=False, excel_writer="xlsxwriter")
 
     dados = segmento[:, embalagem_i]
     return dados
