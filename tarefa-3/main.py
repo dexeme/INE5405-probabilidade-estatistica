@@ -55,7 +55,7 @@ def escolher_coluna(caminho_planilha):
     return coluna_escolhida
 
 def escolher_titulo(default="Title"):
-    titulo = input("Título do plot: ")
+    titulo = input("Título do plot (Default: f{Title}): ")
     return titulo if titulo.strip() else default
 
 def escolher_cor():
@@ -116,6 +116,9 @@ def menu_operacoes_na_planilha(caminho_planilha):
             Q1(caminho_planilha, coluna_a_analisar, cor_histograma, titulo_histograma)
             Q3(caminho_planilha, coluna_a_analisar)
             Q4(caminho_planilha, coluna_a_analisar)
+            cor_plot = escolher_cor()
+            titulo_plot = escolher_titulo("Boxplot")
+            Q5(caminho_planilha, coluna_a_analisar, titulo_plot, cor_plot)
         elif escolha == '6':
             break
         else:
