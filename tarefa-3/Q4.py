@@ -5,12 +5,12 @@ from utils import utils
 #         dados agrupados, obtendo o erro relativo da perda de informação devido ao agrupamento. 
  
 
-def Q4(caminho_planilha, coluna):
+def Q4(caminho_planilha, coluna, k_metodo):
     
     dados = utils.extrai_dados_da_planilha(caminho_planilha, coluna)
 
     n = len(dados)
-    k = utils.k_metodo_sturges(dados)
+    k = k_metodo(dados)
 
     resultados = utils.calcula_resultados(dados, k)
 

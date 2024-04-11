@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from utils import utils
+from utils.utils import k_metodo_raiz_de_n, k_metodo_sturges
 from Q1 import Q1
 from Q3 import Q3
 from Q4 import Q4
@@ -81,6 +81,14 @@ def escolher_cor():
         print("Cor inválida. Usando azul como padrão.")
         return 'blue'
 
+def escolher_k_metodo():
+    itens = ["Sturges", "Raízes"]
+    metodos = [k_metodo_sturges, k_metodo_raiz_de_n]
+
+    i = prompt_items("Método de distribuição:", itens, 0)
+    return metodos[i]
+
+
 def menu_operacoes_na_planilha(caminho_planilha):
     coluna_a_analisar = escolher_coluna(caminho_planilha)
     while True:
@@ -98,13 +106,16 @@ def menu_operacoes_na_planilha(caminho_planilha):
             # Substitua 'funcao_Q1' pelo nome real da sua função
             cor_histograma = escolher_cor()
             titulo_histograma = escolher_titulo("Histograma por Classe")
-            Q1(caminho_planilha, coluna_a_analisar, cor_histograma, titulo_histograma)
+            k_metodo = escolher_k_metodo()
+            Q1(caminho_planilha, coluna_a_analisar, k_metodo, cor_histograma, titulo_histograma)
         elif escolha == '2':
             # Substitua 'funcao_Q2' pelo nome real da sua função
-            Q3(caminho_planilha, coluna_a_analisar)
+            k_metodo = escolher_k_metodo()
+            Q3(caminho_planilha, coluna_a_analisar, k_metodo)
         elif escolha == '3':
             # Substitua 'funcao_Q3' pelo nome real da sua função
-            Q4(caminho_planilha, coluna_a_analisar)
+            k_metodo = escolher_k_metodo()
+            Q4(caminho_planilha, coluna_a_analisar, k_metodo)
         elif escolha == '4':
             cor_plot = escolher_cor()
             titulo_plot = escolher_titulo("Boxplot")
@@ -113,9 +124,9 @@ def menu_operacoes_na_planilha(caminho_planilha):
             # Substitua pelos nomes reais das suas funções
             cor_histograma = escolher_cor()
             titulo_histograma = escolher_titulo("Histograma por Classe")
-            Q1(caminho_planilha, coluna_a_analisar, cor_histograma, titulo_histograma)
-            Q3(caminho_planilha, coluna_a_analisar)
-            Q4(caminho_planilha, coluna_a_analisar)
+            Q1(caminho_planilha, coluna_a_analisar, k_metodo, cor_histograma, titulo_histograma)
+            Q3(caminho_planilha, coluna_a_analisar, k_metodo)
+            Q4(caminho_planilha, coluna_a_analisar, k_metodo)
             cor_plot = escolher_cor()
             titulo_plot = escolher_titulo("Boxplot")
             Q5(caminho_planilha, coluna_a_analisar, titulo_plot, cor_plot)
@@ -125,12 +136,16 @@ def menu_operacoes_na_planilha(caminho_planilha):
             print("Opção inválida. Tente novamente.")
 
 
-def prompt_items(msg: str, itens: list[str]) -> int:
+def prompt_items(msg: str, itens: list[str], default: int | None = None) -> int:
     itens_str = "\n".join(f"{i} - {v}" for i, v in enumerate(itens))
     print(msg + "\n" + itens_str)
 
     while True:
+        msg = "Insira o índice: " if default is None else f"Insira o índice ({default} por padrão): "
         index = input("Insira o índice: ")
+
+        if not index and default is not None:
+            return default
 
         if index.isnumeric():
             return int(index)

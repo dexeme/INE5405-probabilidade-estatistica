@@ -6,7 +6,7 @@ from utils.utils import calcula_intervalos_de_classe, extrai_dados_da_planilha, 
 #         utilizando um critério técnico adequado (raiz de “n” ou Sturges) justificando
 #         a escolha para a  situação definida a analisar.
 
-def Q1(caminho_planilha, coluna_a_analisar, cor_do_histograma, titulo_do_histograma):
+def Q1(caminho_planilha, coluna_a_analisar, k_metodo, cor_do_histograma, titulo_do_histograma):
     dados = extrai_dados_da_planilha(caminho_planilha, coluna_a_analisar)
 
     N = len(dados)
@@ -19,7 +19,7 @@ def Q1(caminho_planilha, coluna_a_analisar, cor_do_histograma, titulo_do_histogr
     extensao = maior - menor
     print(f"Extensão: {extensao}")
 
-    k = k_metodo_sturges(dados)
+    k = k_metodo(dados)
     intervalo_classes = calcula_intervalos_de_classe(dados, k)
     frequencia = [len([v for v in dados if inf <= v <= sup]) for inf, sup in intervalo_classes]
     Fr = [freq / N for freq in frequencia]

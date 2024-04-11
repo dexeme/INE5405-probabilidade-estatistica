@@ -10,9 +10,9 @@ from utils import utils
 #         forma: assimetria  para analisar as situações desejadas. 
 
 
-def Q3(caminho_planilha, coluna):
+def Q3(caminho_planilha, coluna, k_metodo):
     dados = utils.extrai_dados_da_planilha(caminho_planilha, coluna)
-    k = utils.k_metodo_sturges(dados)
+    k = k_metodo(dados)
     n = len(dados)
     resultados = utils.calcula_resultados(dados, k)
     dados_agrupados = utils.calcula_estatisticas_descritivas(resultados, True, n)
